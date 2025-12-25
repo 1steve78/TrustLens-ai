@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Scan {
+  id         String   @id @default(cuid())
+  url        String
+  riskScore  Int
+  riskLevel  String
+  reasons    Json
+  createdAt  DateTime @default(now())
+}
