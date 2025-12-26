@@ -14,3 +14,10 @@ model Scan {
   reasons    Json
   createdAt  DateTime @default(now())
 }
+
+model Report {
+  id        String   @id @default(cuid())
+  url       String
+  reason    String
+  createdAt DateTime @default(now())
+}

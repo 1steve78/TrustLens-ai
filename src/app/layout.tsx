@@ -4,16 +4,20 @@ import Navbar from "@/components/Navbar";
 
 export const metadata = {
   title: "TrustLens AI",
-  description: "Explainable scam & fake platform detection"
+  description: "Explainable scam & fake platform detection",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-900">
+      <body >
         <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          {children}
+
+        {/* Offset for floating navbar */}
+        <main className="pt-40 px-4">
+          <div className="max-w-5xl mx-auto">
+            {children}
+          </div>
         </main>
       </body>
     </html>
