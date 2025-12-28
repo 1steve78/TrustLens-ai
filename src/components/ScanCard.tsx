@@ -1,47 +1,39 @@
-export default function ScanCard() {
+import { Scan } from "@prisma/client";
+
+type ScanCardProps = {
+  scan: Scan;
+};
+
+export default function ScanCard({ scan }: ScanCardProps) {
   return (
-    <div className="glass rounded-xl p-4 border border-blue-500/40">
-
-      <div className="flex items-center gap-2 mb-4">
-        <div className="h-8 w-8 rounded-full bg-white/20" />
-        <p className="text-sm text-gray-300">
-          Alex from Tokyo ✅
+    <div className="glass rounded-xl p-4 border border-white/10">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-sm font-medium truncate">
+          {scan.url}
         </p>
+
+        <span
+          className={`text-xs px-3 py-1 rounded-full ${
+            scan.riskLevel === "Safe"
+              ? "bg-green-500/20 text-green-400"
+              : scan.riskLevel === "Dangerous"
+              ? "bg-red-500/20 text-red-400"
+              : "bg-yellow-500/20 text-yellow-400"
+          }`}
+        >
+          {scan.riskLevel}
+        </span>
       </div>
 
-      <div className="grid grid-cols-[120px_1fr_120px] gap-4 items-center">
+      <p className="text-sm text-gray-400">
+        {scan.summary}
+      </p>
 
-        <div className="bg-white p-2 rounded">
-          QR
-        </div>
-
-        <div>
-          <p className="font-medium">
-            Found a phishing link
-          </p>
-          <p className="text-xs text-gray-400">
-            Scanned public Wi-Fi
-          </p>
-
-          <div className="mt-3 flex gap-2">
-            <button className="px-3 py-1 bg-white/10 rounded text-xs">
-              Agree
-            </button>
-            <button className="px-3 py-1 bg-white/10 rounded text-xs">
-              Disagree
-            </button>
-          </div>
-        </div>
-
-        <div className="text-right">
-          <span className="text-red-400 text-xs">
-            ⚠ Warning
-          </span>
-          <button className="block mt-3 text-xs bg-blue-500 px-3 py-1 rounded">
-            Report
-          </button>
-        </div>
-      </div>
+      <ul className="mt-3 list-disc list-inside text-xs text-gray-400 space-y-1">
+        {scan.details.map((d, i) => (
+          <li key={i}>{d}</li>
+        ))}
+      </ul>
     </div>
   );
 }

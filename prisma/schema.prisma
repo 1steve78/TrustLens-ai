@@ -6,21 +6,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model Scan {
-  id         String   @id @default(cuid())
-  url        String
-  riskScore  Int
-  riskLevel  String
-  reasons    Json
-  createdAt  DateTime @default(now())
-}
-
-model Report {
-  id        String   @id @default(cuid())
-  url       String
-  reason    String
-  createdAt DateTime @default(now())
-}
+/* ================= USER ================= */
 
 model User {
   id        String   @id @default(uuid())
@@ -28,4 +14,76 @@ model User {
   password  String
   name      String?
   createdAt DateTime @default(now())
+
+  scans     Scan[]
+  learning  LearningActivity[]
+  reports Report[]
+
 }
+
+/* ================= SCAN ================= */
+
+model Scan {
+  id        String   @id @default(uuid())
+  url       String
+
+  riskLevel String   @default("Suspicious")
+  summary   String   @default("")
+  details   String[] @default([])
+
+  createdAt DateTime @default(now())
+
+  userId    String?
+  user      User? @relation(fields: [userId], references: [id])
+  reports Report[]
+
+  @@index([createdAt])
+}
+
+
+model LearningActivity {
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  createdAt DateTime @default(now())
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  reports Report[]
+
+  @@index([createdAt])
+}
+
+model Report {
+  id        String   @id @default(uuid())
+
+  type      String   // "REPORT" | "COMMENT"
+  reason    String?  // e.g. "Phishing", "Spam", "Incorrect info"
+  message   String?  // optional user comment
+
+  createdAt DateTime @default(now())
+
+  // ---- Relations ----
+  userId    String?
+  user      User? @relation(fields: [userId], references: [id])
+
+  scanId    String?
+  scan      Scan? @relation(fields: [scanId], references: [id])
+
+  learningId String?
+  learning   LearningActivity? @relation(fields: [learningId], references: [id])
+
+  @@index([createdAt])
+}
+
+model ScamBrief {
+  id          String   @id @default(cuid())
+  title       String
+  summary     String
+  howItWorks  String
+  staySafe    String
+  riskLevel   String
+  scamType    String
+  createdAt  DateTime @default(now())
+}
+

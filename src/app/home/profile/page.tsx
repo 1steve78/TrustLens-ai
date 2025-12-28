@@ -6,16 +6,11 @@ export default function ProfilePage() {
   return (
     <section className="min-h-screen w-full">
 
-      {/* Top bar */}
-      <TopBar />
+      
 
       {/* Main dashboard shell */}
       <div className="flex min-h-[calc(100vh-64px)]">
 
-        {/* Left sidebar */}
-        <aside className="w-[220px] shrink-0">
-          <Sidebar />
-        </aside>
 
         {/* Center content */}
         <main className="flex-1 p-8 space-y-8 overflow-y-auto">
@@ -54,10 +49,6 @@ export default function ProfilePage() {
 
         </main>
 
-        {/* Right panel (Account) */}
-        <aside className="w-[320px] shrink-0">
-          <RightPanel />
-        </aside>
 
       </div>
     </section>

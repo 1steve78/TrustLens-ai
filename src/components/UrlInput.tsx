@@ -1,17 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, Shield } from "lucide-react";
+import ScanResult from "./ScanResult";
+
+type ScanResponse = {
+  url: string;
+  riskLevel: "Safe" | "Suspicious" | "Dangerous";
+  summary: string;
+  details: string[];
+};
 
 export default function UrlInput() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [result, setResult] = useState<ScanResponse | null>(null);
 
   async function handleSubmit() {
     setError("");
+    setResult(null);
 
     if (!url) {
       setError("Please enter a website URL.");
@@ -31,7 +39,9 @@ export default function UrlInput() {
         throw new Error("Scan failed");
       }
 
-      router.push("/history");
+      const data = await res.json();
+      setResult(data);
+
     } catch (err) {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -40,7 +50,7 @@ export default function UrlInput() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Input */}
       <div className="space-y-1">
         <input
@@ -93,6 +103,9 @@ export default function UrlInput() {
           </>
         )}
       </button>
+
+      {/* Result */}
+      {result && <ScanResult result={result} />}
     </div>
   );
 }

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getDomainMetadata } from "@/lib/metadata";
-import { calculateRiskRules } from "@/lib/rules";
-import { analyzeWithAI } from "@/lib/ai";
-import { normalizeRiskScore, riskConfidence } from "@/lib/ethics";
+
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!;
 
 export async function POST(req: Request) {
   try {
@@ -16,81 +14,91 @@ export async function POST(req: Request) {
       );
     }
 
-    // TEMP text extraction (AI replaces later)
-    const extractedText =
-      "Verify your account now to avoid suspension";
+    // -------- AI PROMPT --------
+    const prompt = `
+You are a cybersecurity assistant.
 
-    // 1️⃣ Metadata
-    const metadata = await getDomainMetadata(url);
+Analyze the following URL for phishing or scam risk:
+${url}
 
-    // 2️⃣ Rule-based heuristics
-    const ruleResult = calculateRiskRules({
-      domainAgeDays: metadata.domainAgeDays,
-      sslValid: metadata.sslValid,
-      text: extractedText,
-    });
+Return ONLY valid JSON in this format:
+{
+  "riskLevel": "Safe | Suspicious | Dangerous",
+  "summary": "one short sentence",
+  "details": ["point 1", "point 2", "point 3"]
+}
+`;
 
-    // 3️⃣ AI analysis
-    const aiResult = await analyzeWithAI({
-      url,
-      domainAgeDays: metadata.domainAgeDays,
-      sslValid: metadata.sslValid,
-      extractedText,
-    });
+    // -------- OPENROUTER CALL --------
+    const aiRes = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "http://localhost:3000",
+          "X-Title": "TrustLens AI",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.2,
+        }),
+      }
+    );
 
-    // 4️⃣ Community intelligence
-    const reportCount = await prisma.report.count({
-      where: { url },
-    });
+    const aiData = await aiRes.json();
+    const content = aiData?.choices?.[0]?.message?.content;
 
-    let communityBoost = 0;
-    if (reportCount >= 3) communityBoost = 10;
-    if (reportCount >= 6) communityBoost = 20;
+    if (!content) {
+      throw new Error("Empty AI response");
+    }
 
-    // 5️⃣ Final ethical score
-    const rawScore =
-      aiResult.riskScore +
-      ruleResult.ruleScore +
-      communityBoost;
+    // -------- SAFE PARSE --------
+    let parsed: {
+      riskLevel: "Safe" | "Suspicious" | "Dangerous";
+      summary: string;
+      details: string[];
+    };
 
-    const finalScore = normalizeRiskScore(rawScore);
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      parsed = {
+        riskLevel: "Suspicious",
+        summary: "Unable to confidently analyze this URL.",
+        details: [content],
+      };
+    }
 
-    const riskLevel =
-      finalScore > 70
-        ? "High"
-        : finalScore > 40
-        ? "Medium"
-        : "Low";
-
-    // 6️⃣ Save scan
+    // -------- SAVE TO DB --------
     const scan = await prisma.scan.create({
       data: {
         url,
-        riskScore: finalScore,
-        riskLevel,
-        reasons: [
-          ...ruleResult.reasons,
-          ...aiResult.reasons,
-        ],
+        riskLevel: parsed.riskLevel,
+        summary: parsed.summary,
+        details: parsed.details,
+        userId: null, // later replace with auth user id
       },
     });
 
-    // 7️⃣ Response
+    // -------- RESPONSE FOR UI --------
     return NextResponse.json({
-      scanId: scan.id,
+      id: scan.id,
       url: scan.url,
-      riskScore: finalScore,
-      riskLevel,
-      confidence: riskConfidence(finalScore),
-      reasons: scan.reasons,
-      educationTip: aiResult.educationTip,
-      communityReports: reportCount,
+      riskLevel: scan.riskLevel,
+      summary: scan.summary,
+      details: scan.details,
+      createdAt: scan.createdAt,
     });
+
   } catch (error) {
-    console.error("Scan error:", error);
+    console.error("SCAN ERROR:", error);
     return NextResponse.json(
       { error: "Scan failed" },
       { status: 500 }
     );
   }
 }
+ 
