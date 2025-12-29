@@ -1,16 +1,20 @@
 import TopBar from "@/components/TopBar";
+import { getUserFromJWT } from "@/lib/auth";
 import Sidebar from "@/components/SideBar";
 import RightPanel from "@/components/RightPanel";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getUserFromJWT();
+
+
   return (
     <section className="min-h-screen w-full">
       {/* Top navigation */}
-      <TopBar />
+      <TopBar user={user} />
 
       {/* App shell */}
       <div className="flex min-h-[calc(100vh-64px)]">

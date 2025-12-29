@@ -1,44 +1,65 @@
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-  try {
-    const { reasons } = await req.json();
+/**
+ * Helper: get current year-week string (e.g. 2025-W38)
+ */
+function getYearWeek() {
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), 0, 1);
+  const days = Math.floor(
+    (now.getTime() - firstDay.getTime()) / 86400000
+  );
+  const week = Math.ceil((days + firstDay.getDay() + 1) / 7);
+  return `${now.getFullYear()}-W${week}`;
+}
 
-    const prompt = `
-You are teaching a non-technical user about online scams.
+export async function POST() {
+  const weekKey = getYearWeek();
 
-Given these risk reasons:
-${reasons.join(", ")}
+  // 🔹 Later: check DB if briefing for weekKey exists
+  // 🔹 For now: always generate
 
-Explain in simple language:
-1. What these signs mean
-2. How scammers use them
-3. One practical safety tip
+  const prompt = `
+You are a cybersecurity safety assistant.
 
-Keep it calm, friendly, and educational.
+Generate a WEEKLY scam briefing.
+Rules:
+- 3 short scam trends
+- Simple language
+- No technical jargon
+- Each trend: 1 line explanation + 1 safety tip
+- Calm, educational tone
+
+Return plain text, no markdown.
 `;
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const res = await fetch(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
+        model: "mistralai/mistral-7b-instruct",
         messages: [{ role: "user", content: prompt }],
+        temperature: 0.4,
       }),
-    });
+    }
+  );
 
-    const data = await res.json();
-
-    return NextResponse.json({
-      explanation: data.choices[0].message.content,
-    });
-  } catch (error) {
+  if (!res.ok) {
     return NextResponse.json(
-      { error: "Education generation failed" },
+      { explanation: "Unable to load weekly briefing." },
       { status: 500 }
     );
   }
+
+  const data = await res.json();
+
+  return NextResponse.json({
+    week: weekKey,
+    explanation: data.choices[0].message.content,
+  });
 }
