@@ -18,19 +18,19 @@ export default function TopBar({ user }: Props) {
         </p>
       </div>
 
-      <div className="flex items-center gap-4 text-sm text-gray-300">
-        <span>Profile</span>
+     <div className="flex items-center gap-3 text-sm text-gray-300">
+      <span>Profile</span>
 
-        <Link href="/home/profile">
-          <div className="h-8 w-8 rounded-full bg-white/20 cursor-pointer hover:bg-white/30 transition" >
-            <UserAvatar
-              name={user?.name}
-              avatarUrl={user?.avatarUrl}
-            />
-
-          </div>
-        </Link>
-      </div>
+      <Link
+        href="/home/profile"
+        className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 transition flex items-center justify-center"
+      >
+        <UserAvatar
+          name={user?.name}
+          avatarUrl={user?.avatarUrl}
+        />
+      </Link>
+    </div>
     </header>
   );
 }

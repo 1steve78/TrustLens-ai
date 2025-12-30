@@ -10,6 +10,8 @@ export default function Sidebar() {
       <NavItem label="New Scan" href="/home/scan" />
       <NavItem label="Learning Hub" href="/home/learn" />
       <NavItem label="Profile" href="/home/profile" />
+      <NavItem label="Simulate" href="/home/simulate" />
+
     </aside>
   );
 }
