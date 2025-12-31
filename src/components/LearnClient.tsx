@@ -75,11 +75,37 @@ export default function LearnClient({ briefs }: any) {
 
             {/* Slide */}
             <div className="flex-1">
-                <div className="rounded-2xl bg-white/5 border border-white/10 p-8 text-base text-gray-200 text-center min-h-[160px] flex items-center justify-center leading-relaxed">
-
-                {slides[currentIndex] || "Loading…"}
+                <div className="relative overflow-hidden min-h-[160px] flex items-center justify-center">
+                    <div
+                        key={currentIndex}
+                        className="
+                        absolute w-full px-6
+                        animate-brief-slide
+                        text-center
+                        "
+                    >
+                        <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-8">
+                            <p className="text-lg font-medium text-white leading-relaxed">
+                                {slides[currentIndex] || "Loading…"}
+                            </p>
+                        </div>
+                    </div>
                 </div>
+                <div className="flex justify-center gap-2 mt-4">
+                    {slides.map((_, i) => (
+                        <span
+                        key={i}
+                        className={`h-1.5 w-1.5 rounded-full transition ${
+                            i === currentIndex ? "bg-white" : "bg-white/20"
+                        }`}
+                        />
+                    ))}
+                </div>
+
             </div>
+            <br />
+            
+
 
             {/* Next */}
             <button

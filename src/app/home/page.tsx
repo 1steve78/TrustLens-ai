@@ -1,6 +1,3 @@
-import TopBar from "@/components/TopBar";
-import Sidebar from "@/components/SideBar";
-import RightPanel from "@/components/RightPanel";
 import ScanCard from "@/components/ScanCard";
 import { prisma } from "@/lib/prisma";
 
@@ -16,55 +13,43 @@ export default async function HomePage() {
   });
 
   return (
-    <section className="min-h-screen w-full">
-      
+    <div className="p-8 space-y-12">
 
-      <div className="flex min-h-[calc(100vh-64px)]">
+      {/* SCANS */}
+      <section>
+        <h2 className="text-lg font-semibold mb-6">
+          Global Community Scans
+        </h2>
 
-        
+        <div className="space-y-4">
+          {scans.map((scan) => (
+            <ScanCard key={scan.id} scan={scan} />
+          ))}
+        </div>
+      </section>
 
-        {/* Center */}
-        <main className="flex-1 p-8 overflow-y-auto space-y-10">
+      {/* LEARNING */}
+      <section>
+        <h2 className="text-lg font-semibold mb-6">
+          What People Are Learning
+        </h2>
 
-          {/* SCANS */}
-          <section>
-            <h2 className="text-lg font-semibold mb-6">
-              Global Community Scans
-            </h2>
+        <div className="space-y-4">
+          {learning.map((item) => (
+            <LearningPost
+              key={item.id}
+              title={item.title}
+              category={item.category}
+            />
+          ))}
+        </div>
+      </section>
 
-            <div className="space-y-4">
-              {scans.map((scan) => (
-                <ScanCard key={scan.id} scan={scan} />
-              ))}
-            </div>
-          </section>
-
-          {/* LEARNING */}
-          <section>
-            <h2 className="text-lg font-semibold mb-6">
-              What People Are Learning
-            </h2>
-
-            <div className="space-y-4">
-              {learning.map((item) => (
-                <LearningPost
-                  key={item.id}
-                  title={item.title}
-                  category={item.category}
-                />
-              ))}
-            </div>
-          </section>
-
-        </main>
-
-       
-      </div>
-    </section>
+    </div>
   );
 }
 
-/* ---------- SIMPLE LEARNING POST ---------- */
+/* ---------- LEARNING POST ---------- */
 
 function LearningPost({
   title,

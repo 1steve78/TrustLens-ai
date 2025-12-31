@@ -12,9 +12,10 @@ export default function RootLayout({
         
 
         {/* Single source of spacing */}
-        <main className="pt-[120px] flex justify-center px-6 pb-20">
+        <main className="pt-[120px] min-h-screen flex justify-center px-6">
           {children}
         </main>
+
       </body>
     </html>
   );

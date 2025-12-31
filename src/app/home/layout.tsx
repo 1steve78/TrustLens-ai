@@ -10,30 +10,36 @@ export default async function DashboardLayout({
 }) {
   const user = await getUserFromJWT();
 
-
   return (
-    <section className="min-h-screen w-full">
-      {/* Top navigation */}
-      <TopBar user={user} />
+    <section className="min-h-screen w-full bg-black">
 
-      {/* App shell */}
-      <div className="flex min-h-[calc(100vh-64px)]">
+      {/* 🔝 FIXED TOP BAR */}
+      <div className="fixed top-0 left-0 right-0 h-16 z-50">
+        <TopBar user={user} />
+      </div>
 
-        {/* Left sidebar */}
-        <aside className="w-[220px] shrink-0 bg-white/5 backdrop-blur-xl">
-          <Sidebar />
-        </aside>
+      {/* ⬇️ CONTENT STARTS AFTER TOPBAR + GAP */}
+      <div className="pt-[88px] px-4">
+        {/* 64px topbar + 24px space */}
 
-        {/* Main content */}
-        <main className="flex-1 p-8 overflow-y-auto">
-          {children}
-        </main>
+        <div className="grid grid-cols-[220px_1fr_260px] gap-4 min-h-[calc(100vh-88px)]">
 
-        {/* Right panel */}
-        <aside className="w-[260px] shrink-0 bg-white/5 backdrop-blur-xl">
-          <RightPanel />
-        </aside>
+          {/* Left sidebar */}
+          <aside className="rounded-xl bg-white/5 backdrop-blur-xl">
+            <Sidebar />
+          </aside>
 
+          {/* Main content (ONLY SCROLL HERE) */}
+          <main className="rounded-xl bg-black overflow-y-auto p-8">
+            {children}
+          </main>
+
+          {/* Right panel */}
+          <aside className="rounded-xl bg-white/5 backdrop-blur-xl">
+            <RightPanel />
+          </aside>
+
+        </div>
       </div>
     </section>
   );
