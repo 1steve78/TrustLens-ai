@@ -1,16 +1,45 @@
 import ScanCard from "@/components/ScanCard";
 import { prisma } from "@/lib/prisma";
+import LearningPost from "@/components/LearningPost";
+import type { LearningUser } from "@/components/LearningPost";
+
+
 
 export default async function HomePage() {
   const scans = await prisma.scan.findMany({
     orderBy: { createdAt: "desc" },
     take: 10,
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+        },
+      },
+    },
   });
 
-  const learning = await prisma.learningActivity.findMany({
+ const learning: {
+    id: string;
+    title: string;
+    category: string;
+    user: LearningUser | null;
+  }[] = await prisma.learningActivity.findMany({
     orderBy: { createdAt: "desc" },
     take: 6,
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+        },
+      },
+    },
   });
+
+
 
   return (
     <div className="p-8 space-y-12">
@@ -23,7 +52,7 @@ export default async function HomePage() {
 
         <div className="space-y-4">
           {scans.map((scan) => (
-            <ScanCard key={scan.id} scan={scan} />
+            <ScanCard key={scan.id} scan={scan} user={scan.user} />
           ))}
         </div>
       </section>
@@ -40,8 +69,10 @@ export default async function HomePage() {
               key={item.id}
               title={item.title}
               category={item.category}
+              user={item.user}
             />
           ))}
+
         </div>
       </section>
 
@@ -49,25 +80,3 @@ export default async function HomePage() {
   );
 }
 
-/* ---------- LEARNING POST ---------- */
-
-function LearningPost({
-  title,
-  category,
-}: {
-  title: string;
-  category: string;
-}) {
-  return (
-    <div className="glass rounded-xl p-4 flex items-center justify-between">
-      <div>
-        <p className="font-medium">{title}</p>
-        <p className="text-xs text-gray-400">{category}</p>
-      </div>
-
-      <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">
-        Learning
-      </span>
-    </div>
-  );
-}
