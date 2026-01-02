@@ -19,12 +19,7 @@ export default function TopBar({ user }: Props) {
       </div>
 
      <div className="flex items-center gap-3 text-sm text-gray-300">
-      <Link
-        href="/home/profile/settings"
-        className="hover:underline"
-      >
-        Settings
-      </Link>
+      
 
       <Link
         href="/home/profile"

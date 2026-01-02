@@ -1,6 +1,7 @@
 import { Scan } from "@prisma/client";
 
 type ScanUser = {
+  id: string;
   name: string | null;
   avatarUrl: string | null;
 };
@@ -48,7 +49,7 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
           alt="avatar"
         />
         <span className="text-xs text-gray-400">
-          {user?.name || "Anonymous"}
+          {user?.name || "Demo User"}
         </span>
       </div>
     </div>

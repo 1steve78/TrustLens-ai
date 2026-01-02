@@ -1,12 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import SettingsClient from "@/components/settings-client";
-
+import { getUserFromJWT } from "@/lib/auth";
 export default async function SettingsPage() {
-  // TODO: replace with real auth
-  const userId = "CURRENT_USER_ID";
-
+  const currentUser = await getUserFromJWT();
+  if (!currentUser || !currentUser.id) {
+    return <div className="p-8">Unauthorized</div>;
+  }
+  
   const user = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { id: currentUser.id },
     select: {
       id: true,
       name: true,

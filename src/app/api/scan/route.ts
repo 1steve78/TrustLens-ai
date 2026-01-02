@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getUserFromJWT } from "@/lib/auth";
+
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!;
 
@@ -11,6 +13,13 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "URL is required" },
         { status: 400 }
+      );
+    }
+    const currentUser = await getUserFromJWT();
+    if (!currentUser || !currentUser.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
       );
     }
 
@@ -79,7 +88,9 @@ Return ONLY valid JSON in this format:
         riskLevel: parsed.riskLevel,
         summary: parsed.summary,
         details: parsed.details,
-        userId: null, // later replace with auth user id
+       user: {
+      connect: { id: currentUser.id },
+        },
       },
     });
 
