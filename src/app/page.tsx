@@ -41,7 +41,7 @@ export default async function HomePage() {
             <div className="relative hidden md:flex justify-center">
               <div className="relative h-96 w-56 rounded-3xl glass border border-blue-500/30 flex items-center justify-center">
                 <span className="text-blue-400 text-sm tracking-wide">
-                  Secure Scan
+                  TrustLens
                 </span>
 
                 <div className="absolute inset-0 rounded-3xl blur-2xl bg-blue-500/20 -z-10" />

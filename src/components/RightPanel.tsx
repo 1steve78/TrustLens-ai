@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Tip = {
   title?: string;
@@ -8,16 +9,27 @@ type Tip = {
   link?: string;
 };
 
+const TRENDING_TAGS = [
+  "phishing",
+  "publicwifi",
+  "fakelogin",
+];
+
 export default function RightPanel() {
   const [tips, setTips] = useState<Tip[]>([]);
   const [index, setIndex] = useState(0);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  /* ---------- Learning tips fetch ---------- */
   useEffect(() => {
     fetch("/api/learning-tips")
       .then((res) => res.json())
       .then(setTips);
   }, []);
 
+  /* ---------- Auto slide tips ---------- */
   useEffect(() => {
     if (tips.length === 0) return;
 
@@ -30,9 +42,17 @@ export default function RightPanel() {
 
   const tip = tips[index];
 
+  /* ---------- Trending tag click ---------- */
+  function handleTagClick(tag: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tag", tag.toLowerCase());
+    router.push(`/home?${params.toString()}`);
+  }
+
   return (
     <aside className="space-y-4">
-      {/* Learning Tips */}
+
+      {/* ================= Learning Tips ================= */}
       <div className="bg-white/5 rounded-xl p-4 min-h-[130px]">
         <h3 className="text-sm font-medium mb-2">
           Cybersecurity Tips
@@ -64,17 +84,28 @@ export default function RightPanel() {
         )}
       </div>
 
-      {/* Trending (unchanged) */}
+      {/* ================= Trending Tags ================= */}
       <div className="bg-white/5 rounded-xl p-4">
         <h3 className="text-sm font-medium mb-2">
-          Trending Scans
+          Trending Tags
         </h3>
-        <ul className="text-xs text-gray-400 space-y-2">
-          <li>#Phishing</li>
-          <li>#PublicWiFi</li>
-          <li>#FakeLogin</li>
-        </ul>
+
+        <div className="flex flex-wrap gap-2">
+          {TRENDING_TAGS.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              className="text-xs px-3 py-1 rounded-full
+                         bg-white/5 text-blue-400
+                         border border-white/10
+                         hover:bg-white/10 transition"
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
       </div>
+
     </aside>
   );
 }

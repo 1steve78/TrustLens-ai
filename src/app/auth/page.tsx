@@ -49,7 +49,7 @@ export default function AuthPage() {
             {mode === "login" ? "Welcome back" : "Create your account"}
           </h1>
           <p className="text-gray-400 text-sm">
-            SecureScan • Your gateway for safer digital interaction
+            TrustLens • Your gateway for safer digital interaction
           </p>
         </div>
 

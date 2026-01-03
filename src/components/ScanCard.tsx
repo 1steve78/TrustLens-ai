@@ -1,4 +1,5 @@
 import { Scan } from "@prisma/client";
+import { generateHashtags } from "@/lib/hashtag";
 
 type ScanUser = {
   id: string;
@@ -12,6 +13,12 @@ type ScanCardProps = {
 };
 
 export default function ScanCard({ scan, user }: ScanCardProps) {
+  const hashtags = generateHashtags({
+    url: scan.url,
+    summary: scan.summary,
+    riskLevel: scan.riskLevel,
+  });
+
   return (
     <div className="glass rounded-xl p-4 border border-white/10 space-y-3">
       {/* URL + Risk */}
@@ -34,6 +41,20 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
       {/* Summary */}
       <p className="text-sm text-gray-400">{scan.summary}</p>
 
+      {/* Hashtags */}
+      {hashtags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {hashtags.map((tag) => (
+            <span
+              key={tag}
+              className="text-xs px-2 py-1 rounded-full bg-white/5 text-blue-400 border border-white/10"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Details */}
       <ul className="list-disc list-inside text-xs text-gray-400 space-y-1">
         {scan.details.map((d, i) => (
@@ -49,7 +70,7 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
           alt="avatar"
         />
         <span className="text-xs text-gray-400">
-          {user?.name || "Demo User"}
+          {user?.name || "Anonymous"}
         </span>
       </div>
     </div>

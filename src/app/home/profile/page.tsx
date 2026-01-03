@@ -1,114 +1,91 @@
-import TopBar from "@/components/TopBar";
-import Sidebar from "@/components/SideBar";
-import RightPanel from "@/components/RightPanel";
+import { prisma } from "@/lib/prisma";
+import { getUserFromJWT } from "@/lib/auth";
+import ScanCard from "@/components/ScanCard";
+import LearningPost from "@/components/LearningPost";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const currentUser = await getUserFromJWT();
+
+  if (!currentUser || !currentUser.id) {
+    return <div className="p-8">Unauthorized</div>;
+  }
+
+  /* ---------- FETCH USER LEARNINGS ---------- */
+  const learnings = await prisma.learningActivity.findMany({
+    where: { userId: currentUser.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: { id: true, name: true, avatarUrl: true },
+      },
+    },
+  });
+
+  /* ---------- FETCH USER SCANS ---------- */
+  const scans = await prisma.scan.findMany({
+    where: { userId: currentUser.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: { id: true, name: true, avatarUrl: true },
+      },
+    },
+  });
+
   return (
     <section className="min-h-screen w-full">
-
-      
-
-      {/* Main dashboard shell */}
       <div className="flex min-h-[calc(100vh-64px)]">
+        <main className="flex-1 p-8 space-y-10 overflow-y-auto">
 
-
-        {/* Center content */}
-        <main className="flex-1 p-8 space-y-8 overflow-y-auto">
-
-          {/* Your Activity */}
+          {/* LEARNINGS */}
           <section>
             <h2 className="text-lg font-semibold mb-4">
-              Your Activity
+              Your Learnings
             </h2>
 
-            <div className="space-y-4">
-              <ActivityItem
-                title="Phishing Email Red Flags"
-                subtitle="2024.02.27"
-                status="Safe"
-              />
-              <ActivityItem
-                title="Secure QR Practices"
-                subtitle="Phishing Email Red Flags"
-                status="Safe"
-              />
-            </div>
+            {learnings.length === 0 ? (
+              <p className="text-sm text-gray-400">
+                You haven’t posted any learning yet.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {learnings.map((item) => (
+                  <LearningPost
+                    key={item.id}
+                    title={item.title}
+                    category={item.category}
+                    user={item.user}
+                  />
+                ))}
+              </div>
+            )}
           </section>
 
-          {/* URL Scans */}
+          {/* SCANS */}
           <section>
             <h2 className="text-lg font-semibold mb-4">
               Your URL Scans
             </h2>
 
-            <div className="space-y-4">
-              <UrlItem url="short.url/promo" status="Warning" />
-              <UrlItem url="example-login.com" status="Safe" />
-            </div>
+            {scans.length === 0 ? (
+              <p className="text-sm text-gray-400">
+                You haven’t scanned any URLs yet.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {scans.map((scan) => (
+                  <ScanCard
+                    key={scan.id}
+                    scan={scan}
+                    user={scan.user}
+                  />
+                ))}
+              </div>
+            )}
           </section>
 
         </main>
-
-
       </div>
     </section>
-  );
-}
-
-/* ================= Page-only components ================= */
-
-function ActivityItem({
-  title,
-  subtitle,
-  status,
-}: {
-  title: string;
-  subtitle: string;
-  status: "Safe" | "Warning";
-}) {
-  return (
-    <div className="glass rounded-xl p-4 flex items-center justify-between">
-      <div>
-        <p className="font-medium">{title}</p>
-        <p className="text-xs text-gray-400">{subtitle}</p>
-      </div>
-
-      <span
-        className={`text-xs px-3 py-1 rounded-full ${
-          status === "Safe"
-            ? "bg-green-500/20 text-green-400"
-            : "bg-red-500/20 text-red-400"
-        }`}
-      >
-        {status}
-      </span>
-    </div>
-  );
-}
-
-function UrlItem({
-  url,
-  status,
-}: {
-  url: string;
-  status: "Safe" | "Warning";
-}) {
-  return (
-    <div className="glass rounded-xl p-4 flex items-center justify-between">
-      <div>
-        <p className="font-medium">{url}</p>
-        <p className="text-xs text-gray-400">URL Scan</p>
-      </div>
-
-      <span
-        className={`text-xs px-3 py-1 rounded-full ${
-          status === "Safe"
-            ? "bg-green-500/20 text-green-400"
-            : "bg-red-500/20 text-red-400"
-        }`}
-      >
-        {status}
-      </span>
-    </div>
   );
 }
