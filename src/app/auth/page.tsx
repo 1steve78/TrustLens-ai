@@ -40,7 +40,8 @@ export default function AuthPage() {
   }
 
   return (
-    <section className="w-full max-w-6xl">
+    <section className="min-h-screen w-full flex items-center justify-center px-6">
+
       <div className="glass glow-blue rounded-3xl p-12 md:p-14">
 
         {/* Header */}

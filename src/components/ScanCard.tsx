@@ -1,5 +1,6 @@
 import { Scan } from "@prisma/client";
 import { generateHashtags } from "@/lib/hashtag";
+import Link from "next/link";
 
 type ScanUser = {
   id: string;
@@ -20,6 +21,8 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
   });
 
   return (
+    <Link href={`/home/signal/${scan.id}`}>
+
     <div className="glass rounded-xl p-4 border border-white/10 space-y-3">
       {/* URL + Risk */}
       <div className="flex items-center justify-between">
@@ -74,5 +77,6 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
         </span>
       </div>
     </div>
+    </Link>
   );
 }

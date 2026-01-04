@@ -7,16 +7,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      
-      <body>
-        
-
-        {/* Single source of spacing */}
-        <main className="pt-[120px] min-h-screen flex justify-center px-6">
-          {children}
-        </main>
-
-      </body> 
+      <body className="h-screen w-full dark-scrollbar overflow-hidden bg-black">
+        {children}
+      </body>
     </html>
   );
 }
