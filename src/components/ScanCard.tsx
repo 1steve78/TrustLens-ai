@@ -1,6 +1,7 @@
 import { Scan } from "@prisma/client";
 import { generateHashtags } from "@/lib/hashtag";
 import Link from "next/link";
+import Like from "./Like";
 
 type ScanUser = {
   id: string;
@@ -9,7 +10,7 @@ type ScanUser = {
 };
 
 type ScanCardProps = {
-  scan: Scan;
+  scan: Scan & { likesCount: number };
   user?: ScanUser | null;
 };
 
@@ -20,63 +21,90 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
     riskLevel: scan.riskLevel,
   });
 
+  const riskStyles =
+    scan.riskLevel === "Safe"
+      ? "bg-green-500/15 text-green-400 border-green-500/20"
+      : scan.riskLevel === "Dangerous"
+      ? "bg-red-500/15 text-red-400 border-red-500/20"
+      : "bg-yellow-500/15 text-yellow-400 border-yellow-500/20";
+
   return (
-    <Link href={`/home/signal/${scan.id}`}>
+    <Link href={`/home/scan/${scan.id}`} className="group">
+      <div className="glass rounded-2xl p-5 border border-white/10 hover:border-white/20 transition space-y-4">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-sm text-gray-400 truncate max-w-[70%]">
+            {scan.url}
+          </p>
 
-    <div className="glass rounded-xl p-4 border border-white/10 space-y-3">
-      {/* URL + Risk */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium truncate">{scan.url}</p>
-
-        <span
-          className={`text-xs px-3 py-1 rounded-full ${
-            scan.riskLevel === "Safe"
-              ? "bg-green-500/20 text-green-400"
-              : scan.riskLevel === "Dangerous"
-              ? "bg-red-500/20 text-red-400"
-              : "bg-yellow-500/20 text-yellow-400"
-          }`}
-        >
-          {scan.riskLevel}
-        </span>
-      </div>
-
-      {/* Summary */}
-      <p className="text-sm text-gray-400">{scan.summary}</p>
-
-      {/* Hashtags */}
-      {hashtags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {hashtags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-1 rounded-full bg-white/5 text-blue-400 border border-white/10"
-            >
-              {tag}
-            </span>
-          ))}
+          <span
+            className={`shrink-0 text-xs px-3 py-1 rounded-full border ${riskStyles}`}
+          >
+            {scan.riskLevel}
+          </span>
         </div>
-      )}
 
-      {/* Details */}
-      <ul className="list-disc list-inside text-xs text-gray-400 space-y-1">
-        {scan.details.map((d, i) => (
-          <li key={i}>{d}</li>
-        ))}
-      </ul>
+        {/* Summary */}
+        <p className="text-sm text-gray-200 leading-relaxed">
+          {scan.summary}
+        </p>
 
-      {/* User */}
-      <div className="flex items-center gap-2 pt-2 border-t border-white/10">
-        <img
-          src={user?.avatarUrl || "/avatar-placeholder.png"}
-          className="w-6 h-6 rounded-full"
-          alt="avatar"
-        />
-        <span className="text-xs text-gray-400">
-          {user?.name || "Anonymous"}
-        </span>
+        {/* Hashtags */}
+        {hashtags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {hashtags.map((tag) => (
+              <span
+                key={tag}
+                className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-blue-400 border border-white/10"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Details (subtle) */}
+        {scan.details.length > 0 && (
+          <ul className="text-xs text-gray-400 space-y-1 list-disc list-inside">
+            {scan.details.slice(0, 3).map((d, i) => (
+              <li key={i}>{d}</li>
+            ))}
+            {scan.details.length > 3 && (
+              <li className="list-none text-blue-400">
+                + {scan.details.length - 3} more details
+              </li>
+            )}
+          </ul>
+        )}
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-white/10">
+          <div className="flex items-center gap-2">
+            <img
+              src={user?.avatarUrl || "/avatar-placeholder.png"}
+              className="w-7 h-7 rounded-full"
+              alt="avatar"
+            />
+            <span className="text-xs text-gray-400">
+              {user?.name || "Anonymous"}
+            </span>
+          </div>
+
+          {/* Like button (prevent link navigation inside component) */}
+          <div
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <Like
+              targetType="scan"
+              targetId={scan.id}
+              initialCount={scan.likesCount}
+            />
+          </div>
+        </div>
       </div>
-    </div>
     </Link>
   );
 }

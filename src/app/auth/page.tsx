@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
+import { useState,useEffect } from "react";
+import { useRouter,useSearchParams } from "next/navigation";
+import TaskDonePopup from "@/components/ui/TaskDonePopup";
 export default function AuthPage() {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
+  useEffect(() => {
+    if (searchParams.get("reason") === "auth_required") {
+      setShowPopup(true);
+    }
+  }, [searchParams]);
   async function handleSubmit() {
     setLoading(true);
     setError("");
@@ -21,6 +27,9 @@ export default function AuthPage() {
 
     const res = await fetch(endpoint, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ email, password }),
     });
 
@@ -33,7 +42,7 @@ export default function AuthPage() {
     }
 
     if (mode === "login") {
-      router.push("/home")
+      router.replace("/home")
     } else {
       setMode("login");
     }
@@ -41,7 +50,7 @@ export default function AuthPage() {
 
   return (
     <section className="min-h-screen w-full flex items-center justify-center px-6">
-
+      
       <div className="glass glow-blue rounded-3xl p-12 md:p-14">
 
         {/* Header */}
@@ -137,6 +146,13 @@ export default function AuthPage() {
           <span>Terms of Service</span>
         </div>
       </div>
+      <TaskDonePopup
+        open={showPopup}
+        onClose={() => setShowPopup(false)}
+        title="Login required 🔐"
+        description="Please log in to continue."
+      />
+
     </section>
   );
 }

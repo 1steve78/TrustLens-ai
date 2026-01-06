@@ -12,6 +12,10 @@ type Report = {
   } | null;
 };
 
+type ReportProps = {
+  signalId: string;
+  reports: Report[];
+};
 
 export default function ReportsSection({
   scanId,

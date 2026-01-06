@@ -21,7 +21,7 @@ export default function Sidebar() {
       <div className="space-y-4">
         <NavItem label="Home" href="/home" />
         <NavItem label="New Scan" href="/home/scan" />
-        <NavItem label="Learning Hub" href="/home/learn" />
+        <NavItem label="Learning Hub" href="/home/learning" />
         <NavItem label="Simulate" href="/home/simulate" />
       </div>
 

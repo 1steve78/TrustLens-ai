@@ -1,36 +1,49 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("auth_token")?.value;
-  const { pathname } = req.nextUrl;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  const isProtected =
+  // 🔐 Read auth cookie (THIS is what fixes your issue)
+  const authToken = request.cookies.get("auth_token")?.value;
+
+  // 🌍 Public routes (no auth needed)
+  const publicRoutes = [
+    "/auth",
+    "/api/auth",
+  ];
+
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // 🏠 Protected routes
+  const isProtectedRoute =
     pathname.startsWith("/home") ||
-    pathname.startsWith("/simulate") ||
-    pathname.startsWith("/api");
+    (pathname.startsWith("/api") && !pathname.startsWith("/api/auth"));
 
-  const isAuthRoute = pathname.startsWith("/api/auth");
+  // 🚫 Not logged in → trying to access protected route
+  if (!authToken && isProtectedRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth";
+    url.searchParams.set("reason", "auth_required");
+    return NextResponse.redirect(url);
+  }
 
-  if (isProtected && !isAuthRoute && !token) {
-    // 🔒 API → return 401
-    if (pathname.startsWith("/api")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // 🔁 Pages → redirect
-    return NextResponse.redirect(new URL("/auth", req.url));
+  // 🔁 Logged in → trying to access auth page
+  if (authToken && pathname.startsWith("/auth")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home";
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 }
+
+// 🎯 Tell Next.js when to run middleware
 export const config = {
   matcher: [
     "/home/:path*",
-    "/simulate/:path*",
+    "/auth",
     "/api/:path*",
   ],
 };

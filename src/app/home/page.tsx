@@ -21,8 +21,12 @@ export type Signal =
       id: string;
       createdAt: Date;
       learning: {
+        id: string;
         title: string;
         category: string;
+        likesCount: number;
+        createdAt: Date;
+        userId: string;
       };
       user: LearningUser | null;
     };
@@ -37,18 +41,18 @@ export default async function HomePage() {
   });
 
   const learning = await prisma.learningActivity.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 10,
-      include: {
-        user: { select: { id: true, name: true, avatarUrl: true } },
-      },
-    });
-    const searchParams = new URL(
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    include: {
+      user: { select: { id: true, name: true, avatarUrl: true } },
+    },
+  });
+
+  const searchParams = new URL(
     (await headers()).get("x-url") || "http://localhost"
   ).searchParams;
 
   const activeTag = searchParams.get("tag");
-
 
   const signals: Signal[] = [
     ...scans.map((scan) => ({
@@ -62,12 +66,19 @@ export default async function HomePage() {
       type: "LEARNING" as const,
       id: item.id,
       createdAt: item.createdAt,
-      learning: { title: item.title, category: item.category },
+      learning: {
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        likesCount: item.likesCount,
+        createdAt: item.createdAt,
+        userId: item.userId,
+      },
       user: item.user,
     })),
   ]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 10); // ✅ HARD LIMIT
+    .slice(0, 10);
 
   return <SignalsFeed initialSignals={signals} />;
 }
