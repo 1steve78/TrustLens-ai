@@ -1,46 +1,40 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { getUserFromJWT } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { scanId, message } = await req.json();
+    const { targetType, targetId, message } = await req.json();
 
-    if (!scanId || !message?.trim()) {
+    if (!targetType || !targetId || !message?.trim()) {
       return NextResponse.json(
-        { error: "Invalid payload" },
+        { error: "Invalid request" },
         { status: 400 }
       );
     }
 
-    const scanExists = await prisma.scan.findUnique({
-      where: { id: scanId },
-      select: { id: true },
-    });
+    const data: any = {
+      message,
+    };
 
-    if (!scanExists) {
+    // 🔑 attach to correct model
+    if (targetType === "scan") {
+      data.scanId = targetId;
+    } else if (targetType === "learning") {
+      data.learningId = targetId;
+    } else {
       return NextResponse.json(
-        { error: "Scan not found" },
-        { status: 404 }
+        { error: "Invalid target type" },
+        { status: 400 }
       );
     }
 
-    const user = await getUserFromJWT().catch(() => null);
+    await prisma.report.create({ data });
 
-    await prisma.report.create({
-      data: {
-        type: "SCAN",          // ✅ THIS FIXES THE ERROR
-        scanId,
-        message,
-        userId: user?.id ?? null,
-      },
-    });
-
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("REPORT_CREATE_ERROR", err);
+    console.error("REPORT ERROR:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to submit report" },
       { status: 500 }
     );
   }

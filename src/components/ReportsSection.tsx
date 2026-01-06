@@ -12,17 +12,14 @@ type Report = {
   } | null;
 };
 
-type ReportProps = {
-  signalId: string;
-  reports: Report[];
-};
-
 export default function ReportsSection({
-  scanId,
-  reports,
+  targetType,
+  targetId,
+  reports = [],
 }: {
-  scanId: string;
-  reports: Report[];
+  targetType: "scan" | "learning";
+  targetId: string;
+  reports?: Report[];
 }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,12 +31,12 @@ export default function ReportsSection({
     await fetch("/api/reports", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scanId, message: text }),
+      body: JSON.stringify({ targetType, targetId, message: text }),
     });
 
     setText("");
     setLoading(false);
-    location.reload(); // simple & safe for now
+    location.reload();
   }
 
   return (
@@ -66,32 +63,32 @@ export default function ReportsSection({
       </div>
 
       {/* List */}
-      <div className="space-y-3">
-        {reports.length === 0 && (
-          <p className="text-xs text-gray-500">
-            No reports yet. Be the first to flag something.
-          </p>
-        )}
+      {reports.length === 0 ? (
+        <p className="text-xs text-gray-500">
+          No reports yet. Be the first to flag something.
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {reports.map((r) => (
+            <div
+              key={r.id}
+              className="glass border border-white/10 rounded-xl p-4 text-sm text-gray-300"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <img
+                  src={r.user?.avatarUrl || "/avatar-placeholder.png"}
+                  className="w-5 h-5 rounded-full"
+                />
+                <span className="text-xs text-gray-400">
+                  {r.user?.name || "Anonymous"}
+                </span>
+              </div>
 
-        {reports.map((r) => (
-          <div
-            key={r.id}
-            className="glass border border-white/10 rounded-xl p-4 text-sm text-gray-300"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <img
-                src={r.user?.avatarUrl || "/avatar-placeholder.png"}
-                className="w-5 h-5 rounded-full"
-              />
-              <span className="text-xs text-gray-400">
-                {r.user?.name || "Anonymous"}
-              </span>
+              <p>{r.message}</p>
             </div>
-
-            <p>{r.message}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

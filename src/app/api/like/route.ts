@@ -1,60 +1,64 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
-type LikeTarget = "report" | "scan" | "learning" | "media";
+import { getUserFromJWT } from "@/lib/auth"; // adjust to your auth setup
 
 export async function POST(req: Request) {
   try {
+    const session = await getUserFromJWT();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const { targetType, targetId } = await req.json();
 
     if (!targetType || !targetId) {
       return NextResponse.json(
-        { error: "Invalid payload" },
+        { error: "Invalid request" },
         { status: 400 }
       );
     }
 
-    switch (targetType as LikeTarget) {
-      case "report":
-        await prisma.report.update({
-          where: { id: targetId },
-          data: { likesCount: { increment: 1 } },
-        });
-        break;
+    const userId = session.user.id;
 
-      case "scan":
-        await prisma.scan.update({
-          where: { id: targetId },
-          data: { likesCount: { increment: 1 } },
-        });
-        break;
-
-      case "learning":
-        await prisma.learningActivity.update({
-          where: { id: targetId },
-          data: { likesCount: { increment: 1 } },
-        });
-        break;
-
-      case "media":
-        await prisma.mediaScan.update({
-          where: { id: targetId },
-          data: { likesCount: { increment: 1 } },
-        });
-        break;
-
-      default:
-        return NextResponse.json(
-          { error: "Unknown target type" },
-          { status: 400 }
-        );
+    // 🔒 try creating like (unique constraint protects us)
+    try {
+      await prisma.like.create({
+        data: {
+          userId,
+          targetType,
+          targetId,
+        },
+      });
+    } catch (err: any) {
+      // Already liked
+      return NextResponse.json(
+        { error: "Already liked" },
+        { status: 409 }
+      );
     }
 
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error("LIKE_ERROR", error);
+    // ✅ increment correct counter
+    if (targetType === "scan") {
+      await prisma.scan.update({
+        where: { id: targetId },
+        data: { likesCount: { increment: 1 } },
+      });
+    } else if (targetType === "learning") {
+      await prisma.learningActivity.update({
+        where: { id: targetId },
+        data: { likesCount: { increment: 1 } },
+      });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("LIKE ERROR:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to like" },
       { status: 500 }
     );
   }
