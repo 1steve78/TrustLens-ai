@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function POST(req: Request) {
