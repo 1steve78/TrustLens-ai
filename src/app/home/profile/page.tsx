@@ -29,11 +29,11 @@ export default async function ProfilePage() {
 
   return (
     <ProfileClient
-      learnings={learnings.map(l => ({
+      learnings={learnings.map((l: (typeof learnings)[number]) => ({
         ...l,
         likesCount: l._count.likes,
       }))}
-      scans={scans.map(s => ({
+      scans={scans.map((s: (typeof scans)[number]) => ({
         ...s,
         likesCount: s._count.likes,
       }))}
