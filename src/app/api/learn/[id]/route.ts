@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getUserFromJWT } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 export async function DELETE(
   req: Request,
   context: { params: Promise<{ id: string }> }
