@@ -55,14 +55,14 @@ export default async function HomePage() {
   const activeTag = searchParams.get("tag");
 
   const signals: Signal[] = [
-    ...scans.map((scan) => ({
+    ...scans.map((scan: (typeof scans)[number]) => ({
       type: "SCAN" as const,
       id: scan.id,
       createdAt: scan.createdAt,
       scan,
       user: scan.user,
     })),
-    ...learning.map((item) => ({
+    ...learning.map((item: (typeof learning)[number]) => ({
       type: "LEARNING" as const,
       id: item.id,
       createdAt: item.createdAt,
