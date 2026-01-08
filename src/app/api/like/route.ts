@@ -4,14 +4,15 @@ import { getUserFromJWT } from "@/lib/auth"; // adjust to your auth setup
 
 export async function POST(req: Request) {
   try {
-    const session = await getUserFromJWT();
+    const user = await getUserFromJWT();
 
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
+
 
     const { targetType, targetId } = await req.json();
 
