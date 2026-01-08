@@ -86,7 +86,7 @@ export default async function ScanDetailPage({
       <ReportsSection
         targetType="scan"
         targetId={scan.id}
-        reports={scan.reports.map((r) => ({
+        reports={scan.reports.map((r: (typeof scan.reports)[number]) => ({
           ...r,
           createdAt: r.createdAt.toISOString(),
         }))}
