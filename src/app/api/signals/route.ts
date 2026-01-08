@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   const page = Number(searchParams.get("page") || 1);
   const take = 10;
   const skip = page * take;
-
+  
   const scans = await prisma.scan.findMany({
     orderBy: { createdAt: "desc" },
     skip,
@@ -26,14 +26,14 @@ export async function GET(req: Request) {
   });
 
   const signals = [
-    ...scans.map((scan) => ({
+    ...scans.map((scan: (typeof scans)[number]) => ({
       type: "SCAN",
       id: scan.id,
       createdAt: scan.createdAt,
       scan,
       user: scan.user,
     })),
-    ...learning.map((item) => ({
+    ...learning.map((item: (typeof learning)[number]) => ({
       type: "LEARNING",
       id: item.id,
       createdAt: item.createdAt,
