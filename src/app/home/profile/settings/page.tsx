@@ -22,8 +22,3 @@ export default async function SettingsPage() {
 
   return <SettingsClient user={user} />;
 }
-
-.glass-footer {
-  background: rgba(20, 24, 40, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
