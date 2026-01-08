@@ -1,68 +1,62 @@
-Perfect. Here’s a **clean, copy-paste–ready `README.md`** that fits **TrustLens** as a serious security product.
-No fluff, no cringe, startup-grade.
-
----
-
-```md
 # TrustLens 🔐
 
-TrustLens is a digital safety platform designed to help users detect scams, verify content authenticity, and protect themselves online using modern security techniques and AI-assisted analysis.
+TrustLens is a digital safety platform built to help users detect scams, verify content authenticity, and protect themselves online using modern security techniques and AI-assisted analysis.
 
 ---
 
 ## 🚀 Features
 
-- **Scanning Suspicious Links**  
-  Analyze URLs in real time to detect phishing, malware, and scam infrastructure before interacting with them.
+- **Suspicious Link Scanning**  
+  Analyze URLs in real time to identify phishing attempts, malware delivery, and scam infrastructure before interaction.
 
 - **Deepfake Detection**  
-  Identify AI-generated images, videos, and impersonation attempts using forensic analysis.
+  Detect AI-generated images, videos, and impersonation attempts using forensic and behavioral analysis.
 
-- **Learn From Latest Scams**  
-  Stay updated with real-world scam patterns, attack techniques, and emerging digital threats.
+- **Learn From Active Scams**  
+  Stay informed about real-world scam patterns, attack vectors, and emerging digital threats.
 
 - **Real Scam Simulation**  
-  Experience controlled scam scenarios to understand how attacks work and how to respond safely.
+  Experience controlled scam scenarios to understand attacker behavior and safe response strategies.
 
 - **Community Experience Hub**  
-  Share experiences, report incidents, and learn from others in a trusted, moderated community.
+  Share incidents, report scams, and learn from others in a trusted, moderated environment.
 
 ---
 
-## 🛡️ Why TrustLens?
+## 🛡️ Why TrustLens
 
-- Privacy-first design
-- Calm, secure user experience
-- No invasive tracking
-- Built for education, prevention, and protection
-- Designed to scale with new threat intelligence
+- Privacy-first by design  
+- Calm, security-focused user experience  
+- No invasive tracking or profiling  
+- Built for education, prevention, and protection  
+- Designed to scale with evolving threat intelligence
 
 ---
 
 ## 🧱 Tech Stack
 
 - **Frontend:** Next.js (App Router), React, Tailwind CSS  
-- **Backend:** API routes, secure middleware  
-- **Auth:** Cookie-based authentication  
-- **UI:** Glassmorphism, dark security-first theme  
-- **Deployment:** Vercel 
+- **Backend:** Serverless API routes, secure middleware  
+- **Authentication:** Cookie-based authentication  
+- **UI:** Dark, security-first theme with glassmorphism  
+- **Deployment:** Vercel  
 
 ---
 
 ## 🔒 Privacy & Security
 
-- Uploaded content is processed only for analysis
-- Media is not shared publicly
-- Data is handled using secure, industry-standard practices
-- No selling of user data
+- Uploaded content is processed strictly for analysis purposes  
+- Media is never shared publicly  
+- Data handling follows industry-standard security practices  
+- No selling or monetization of user data  
 
-Read more in our [Privacy Policy](/privacy).
+Read more in the [Privacy Policy](/privacy).
 
 ---
 
 ## 📁 Project Structure Overview
 
-This project is built using **Next.js (App Router)** with TypeScript, Tailwind CSS, Prisma, and a modular architecture designed for scalability and security-focused features.
+TrustLens is built using **Next.js (App Router)** with TypeScript, Tailwind CSS, Prisma, and a modular architecture focused on scalability and security.
 
 ---
 
@@ -80,34 +74,34 @@ This project is built using **Next.js (App Router)** with TypeScript, Tailwind C
 
 - **prisma/**  
   Prisma ORM files including:
-  - Schema definitions
-  - Migrations
-  - Database-related configuration
+  - Schema definitions  
+  - Database migrations  
+  - Database configuration  
 
 - **public/**  
   Static assets such as images, icons, and favicons.
 
 - **src/**  
-  Main application source code (frontend + backend logic).
+  Main application source code (frontend and backend logic).
 
 ---
 
 ### ⚙️ Top-Level Configuration Files
 
 - **.env**  
-  Environment variables (API keys, secrets). Never commit to version control.
+  Environment variables (API keys, secrets). Never commit this file.
 
 - **.gitignore**  
   Git ignore rules.
 
 - **components.json**  
-  UI system or component library configuration (e.g. shadcn/ui).
+  UI system configuration (e.g. shadcn/ui).
 
 - **eslint.config.mjs**  
-  ESLint rules and linting configuration.
+  ESLint configuration.
 
 - **next-env.d.ts**  
-  Auto-generated Next.js TypeScript type definitions.
+  Auto-generated Next.js TypeScript definitions.
 
 - **next.config.ts**  
   Next.js configuration.
@@ -119,10 +113,10 @@ This project is built using **Next.js (App Router)** with TypeScript, Tailwind C
   PostCSS configuration.
 
 - **prisma.config.ts**  
-  Prisma-specific configuration.
+  Prisma configuration.
 
 - **tailwind.config.ts**  
-  Tailwind CSS configuration and theme setup.
+  Tailwind CSS theme and configuration.
 
 - **tsconfig.json**  
   TypeScript compiler configuration.
@@ -134,43 +128,43 @@ This project is built using **Next.js (App Router)** with TypeScript, Tailwind C
 
 ### 🌐 App Router Structure (`src/app/`)
 
-This project uses the **Next.js App Router**.
+TrustLens uses the **Next.js App Router**.
 
 - **layout.tsx**  
-  Root layout for the entire application.
+  Root layout for the application.
 
 - **page.tsx**  
-  Root (`/`) landing page.
+  Landing page (`/`).
 
 - **globals.css**  
-  Global styles and theme definitions.
+  Global styles and theme variables.
 
 - **favicon.ico**  
   Application favicon.
 
-#### Route Groups & Pages
+#### Routes & Pages
 
 - **app/home/**  
-  Main authenticated application experience.
-  - Includes nested routes and learning-related pages
-  - Example utilities:  
-    `home/learning/lib/getScamBriefs.ts`
+  Main authenticated user experience.  
+  Includes nested routes and learning-related pages.  
+  Example utility:  
+  `home/learning/lib/getScamBriefs.ts`
 
 - **app/learn-more/**  
-  Marketing and informational pages.
+  Informational and marketing pages.
 
 - **app/privacy/**  
-  Privacy policy and privacy-related content.
+  Privacy policy and related content.
 
 - **app/auth/**  
-  Authentication pages (login, signup, etc.).
+  Authentication pages (login, signup).
 
 - **app/api/auth/**  
   Authentication API routes  
   (e.g. `app/api/auth/login/route.ts`).
 
 - **app/api/**  
-  Additional serverless API route handlers.
+  Additional serverless API endpoints.
 
 ---
 
@@ -178,70 +172,48 @@ This project uses the **Next.js App Router**.
 
 Reusable React components.
 
-- **Top-level components**
-  - Feature-specific components (e.g. `AddSignalModal.tsx`)
-  - Shared layout and presentation components
+- **Feature components**  
+  Domain-specific UI (e.g. `AddSignalModal.tsx`).
 
 - **components/learn-more/**  
-  Components specific to the “Learn More” section.
+  Components for informational pages.
 
 - **components/ui/**  
-  Generic, reusable UI primitives (buttons, inputs, modals, etc.).
+  Shared UI primitives (buttons, inputs, modals).
 
 ---
 
 ### 🧠 Shared Logic & Utilities (`src/lib/`)
 
-Centralized backend and shared logic.
+Centralized shared logic.
 
-- **ai.ts**  
-  AI-related helpers and integrations.
-
-- **auth.ts**  
-  Authentication utilities.
-
-- **cloudinary.ts**  
-  Media upload and Cloudinary helpers.
-
-- **ethics.ts**  
-  Policy or ethics-related checks.
-
-- **hashtag.ts**  
-  Hashtag parsing and formatting utilities.
-
-- **metadata.ts**  
-  SEO and metadata helpers.
-
-- **prisma.ts**  
-  Prisma client instance.
-
-- **rateLimit.ts**  
-  Rate limiting logic.
-
-- **rules.ts**  
-  Business rules and validation logic.
-
-- **utils.ts**  
-  General helper utilities.
+- **ai.ts** — AI integrations and helpers  
+- **auth.ts** — Authentication utilities  
+- **cloudinary.ts** — Media upload helpers  
+- **ethics.ts** — Policy and safety checks  
+- **hashtag.ts** — Hashtag utilities  
+- **metadata.ts** — SEO helpers  
+- **prisma.ts** — Prisma client instance  
+- **rateLimit.ts** — Rate limiting logic  
+- **rules.ts** — Business rules and validation  
+- **utils.ts** — General utilities  
 
 ---
 
 ### 🧱 Middleware
 
 - **src/middleware.ts**  
-  Next.js middleware for request handling at the edge  
-  (authentication, logging, access control, etc.).
+  Edge middleware for authentication, access control, and request handling.
 
 ---
 
 ### ✅ Architecture Goals
 
-- Modular and scalable
-- Security-first design
-- Clear separation of concerns
-- App Router–native patterns
-- Easy to extend with new features and API routes
-
+- Modular and scalable  
+- Security-first design  
+- Clear separation of concerns  
+- App Router–native patterns  
+- Easy extensibility for new features and APIs  
 
 ---
 
@@ -251,37 +223,5 @@ Centralized backend and shared logic.
 # Install dependencies
 npm install
 
-# Run development server
+# Start development server
 npm run dev
-````
-
----
-
-## 📌 Roadmap
-
-* Video deepfake scanning
-* Browser extension
-* Real-time alert system
-* Public threat database
-* Advanced community moderation tools
-
----
-
-## 🤝 Contributing
-
-Contributions, ideas, and feedback are welcome.
-Open an issue or submit a pull request to get involved.
-
----
-
-## 📬 Contact
-
-* **Email:** [support@trustlens.ai](mailto:support@trustlens.ai)
-* **Website:** [https://trustlens.ai](https://trustlens.ai)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
