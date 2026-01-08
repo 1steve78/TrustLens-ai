@@ -99,7 +99,7 @@ export default async function LearningDetailPage({
       <ReportsSection
         targetType="learning"
         targetId={learning.id}
-        reports={learning.reports.map((r) => ({
+        reports={learning.reports.map((r: (typeof learning.reports)[number]) => ({
           ...r,
           createdAt: r.createdAt.toISOString(),
         }))}
