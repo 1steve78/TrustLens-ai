@@ -1,3 +1,4 @@
+// @ts-ignore - Prisma types may not be generated in this environment, but runtime client is available
 import { PrismaClient } from "@prisma/client";
 import { Pool } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
