@@ -1,4 +1,3 @@
-import { Scan } from "@prisma/client";
 import { generateHashtags } from "@/lib/hashtag";
 import Link from "next/link";
 import Like from "./Like";
@@ -9,8 +8,17 @@ type ScanUser = {
   avatarUrl: string | null;
 };
 
+type ScanForCard = {
+  id: string;
+  url: string;
+  riskLevel: string;
+  summary: string;
+  details: string[];
+  likesCount: number;
+};
+
 type ScanCardProps = {
-  scan: Scan & { likesCount: number };
+  scan: ScanForCard;
   user?: ScanUser | null;
 };
 
