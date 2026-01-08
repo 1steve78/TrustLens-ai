@@ -1,9 +1,10 @@
 "use client";
 
-import { useState,useEffect } from "react";
-import { useRouter,useSearchParams } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import TaskDonePopup from "@/components/ui/TaskDonePopup";
-export default function AuthPage() {
+
+function AuthPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -154,5 +155,19 @@ export default function AuthPage() {
       />
 
     </section>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <section className="min-h-screen w-full flex items-center justify-center px-6">
+        <div className="glass glow-blue rounded-3xl p-12 md:p-14">
+          <p className="text-gray-300">Loading auth page...</p>
+        </div>
+      </section>
+    }>
+      <AuthPageInner />
+    </Suspense>
   );
 }
