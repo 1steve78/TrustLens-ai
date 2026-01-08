@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserFromJWT } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 /* ================= CONFIG ================= */
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
