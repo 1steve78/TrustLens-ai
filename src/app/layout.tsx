@@ -7,7 +7,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="h-screen w-full dark-scrollbar overflow-hidden bg-black">
+      <body className="min-h-screen w-full dark-scrollbar overflow-y-auto bg-black">
+
         {children}
       </body>
     </html>

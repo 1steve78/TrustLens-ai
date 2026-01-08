@@ -1,82 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import UserAvatar from "@/components/UserAvatar";
-
-type Props = {
-  user: {
-    id: string;
-    name: string | null;
-    avatarUrl: string | null;
-  };
+import { useRouter } from "next/navigation";
+type User = {
+  id: string;
+  name: string | null;
+  avatarUrl: string | null;
+  bio?: string | null;
 };
 
-export default function SettingsClient({ user }: Props) {
-  const [name, setName] = useState(user.name ?? "");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(user.avatarUrl);
-  const [saving, setSaving] = useState(false);
+export default function SettingsClient({ user }: { user: User }) {
+  const router = useRouter();
+  const [name, setName] = useState(user.name || "");
+  const [bio, setBio] = useState(user.bio || "");
+  const [loading, setLoading] = useState(false);
 
-  const generatedAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${
-    name || "user"
-  }`;
+  async function save() {
+    setLoading(true);
 
-  async function saveProfile() {
-    setSaving(true);
-
-    await fetch("/api/user/profile", {
+    await fetch("/api/user/update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        avatarUrl,
-      }),
+      body: JSON.stringify({ name, bio }),
     });
 
-    setSaving(false);
+    setLoading(false);
+    router.push("/home/profile");
+    router.refresh();
   }
 
   return (
-    <div className="max-w-xl mx-auto p-8 space-y-8">
-      <h1 className="text-xl font-semibold">Account Settings</h1>
+    <section className="max-w-xl mx-auto p-8 space-y-6">
+      <h1 className="text-xl font-semibold text-white">
+        Edit Profile
+      </h1>
 
-      {/* Avatar */}
-      <div className="glass rounded-xl p-6 space-y-4">
-        <p className="text-sm font-medium">Profile Picture</p>
-
-        <div className="flex items-center gap-4">
-          <UserAvatar name={name} avatarUrl={avatarUrl} />
-
-          <button
-            onClick={() => setAvatarUrl(generatedAvatar)}
-            className="text-sm px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
-          >
-            Generate New Avatar
-          </button>
-        </div>
-      </div>
-
-      {/* Name */}
-      <div className="glass rounded-xl p-6 space-y-3">
-        <p className="text-sm font-medium">Display Name</p>
-
+      <div className="space-y-4">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="w-full bg-transparent border border-white/10
+                     rounded-lg px-4 py-2 text-sm text-white"
           placeholder="Your name"
-          className="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none focus:ring-1 focus:ring-white/20"
         />
-      </div>
 
-      {/* Save */}
-      <div className="flex justify-end">
+        <textarea
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          className="w-full bg-transparent border border-white/10
+                     rounded-lg px-4 py-2 text-sm text-white"
+          placeholder="Short bio"
+          rows={4}
+        />
+
         <button
-          onClick={saveProfile}
-          disabled={saving}
-          className="px-6 py-2 rounded-lg bg-blue-600 text-sm font-medium hover:bg-blue-500 transition disabled:opacity-50"
+          onClick={save}
+          disabled={loading}
+          className="px-4 py-2 rounded-full
+                     bg-blue-500/20 text-blue-400
+                     hover:bg-blue-500/30 transition"
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {loading ? "Saving…" : "Save Changes"}
         </button>
       </div>
-    </div>
+    </section>
   );
 }

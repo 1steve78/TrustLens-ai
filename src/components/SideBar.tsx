@@ -23,11 +23,13 @@ export default function Sidebar() {
         <NavItem label="New Scan" href="/home/scan" />
         <NavItem label="Learning Hub" href="/home/learning" />
         <NavItem label="Simulate" href="/home/simulate" />
+        <NavItem label="Deepfake Detection" href="/home/deepfake" />
       </div>
 
       {/* Bottom actions */}
       <div className="mt-auto pt-4 border-t border-white/10 space-y-2">
         <NavItem label="Settings" href="/home/profile/settings" />
+        <NavItem label="Try Extension" href="https://github.com/1steve78/TrustLens-extension" />
 
         <button
           onClick={handleLogout}
