@@ -34,6 +34,7 @@ model Scan {
   summary   String   @default("")
   details   String[] @default([])
   likes     Like[]
+  likesCount  Int      @default(0)
 
   createdAt DateTime @default(now())
 
@@ -51,6 +52,7 @@ model LearningActivity {
   category  String
   createdAt DateTime @default(now())
   likes     Like[]
+  likesCount  Int      @default(0)
 
   userId    String
   user      User    @relation(fields: [userId], references: [id])
