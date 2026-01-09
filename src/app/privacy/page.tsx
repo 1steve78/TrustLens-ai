@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           </Section>
 
           <Section title="Contact">
-            Email us at <span className="text-blue-400">support@trustlens.ai</span>
+            Email us at <span className="text-blue-400">mdyalam547@gmail.com</span>
           </Section>
 
         </div>
