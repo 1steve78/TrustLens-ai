@@ -68,3 +68,12 @@ body {
 .feature-card:hover {
   transform: translateY(-4px);
 }
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background: rgba(15, 18, 30, 0.92);
+  }
+}
+html, body {
+  min-height: 100%;
+  background-attachment: fixed;
+}
