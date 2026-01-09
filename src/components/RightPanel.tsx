@@ -42,7 +42,6 @@ export default function RightPanel() {
 
   const tip = tips[index];
 
-  /* ---------- Trending tag click ---------- */
   function handleTagClick(tag: string) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tag", tag.toLowerCase());
@@ -85,8 +84,15 @@ export default function RightPanel() {
       </div>
 
       {/* ================= Trending Tags ================= */}
-      <div className="bg-white/5 rounded-xl p-4">
-        <h3 className="text-sm font-medium mb-2">
+      <div
+        className="
+          bg-black
+          rounded-xl
+          p-4
+          border border-white/10
+        "
+      >
+        <h3 className="text-sm font-medium mb-2 text-white/90">
           Trending Tags
         </h3>
 
@@ -95,10 +101,14 @@ export default function RightPanel() {
             <button
               key={tag}
               onClick={() => handleTagClick(tag)}
-              className="text-xs px-3 py-1 rounded-full
-                         bg-white/5 text-blue-400
-                         border border-white/10
-                         hover:bg-white/10 transition"
+              className="
+                text-xs px-3 py-1 rounded-full
+                bg-black
+                text-blue-400
+                border border-blue-500/20
+                hover:bg-blue-500/10
+                transition
+              "
             >
               #{tag}
             </button>

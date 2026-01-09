@@ -19,7 +19,7 @@ export default function ProfileClient({
   const [visibleScans, setVisibleScans] = useState(PAGE_SIZE);
   const router = useRouter();
 
-  // user info from first item (safe because profile owner)
+  // user info from first item (profile owner)
   const user = learnings[0]?.user || scans[0]?.user;
 
   return (
@@ -39,10 +39,12 @@ export default function ProfileClient({
               {user?.name || "Your Profile"}
             </h1>
 
-            <p className="text-sm text-gray-400 max-w-md">
-              Cybersecurity enthusiast sharing scans and learning resources
-              to help the community stay safe online.
-            </p>
+            {/* BIO (only render if exists) */}
+            {user?.bio && (
+              <p className="text-sm text-gray-400 max-w-md">
+                {user.bio}
+              </p>
+            )}
           </div>
         </div>
 
@@ -50,8 +52,8 @@ export default function ProfileClient({
         <button
           onClick={() => router.push("/home/profile/settings")}
           className="text-sm px-4 py-2 rounded-full
-                    bg-white/10 hover:bg-white/20
-                    transition"
+                     bg-white/10 hover:bg-white/20
+                     transition"
         >
           Edit Profile
         </button>

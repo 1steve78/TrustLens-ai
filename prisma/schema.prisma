@@ -15,7 +15,7 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   avatarUrl String?
-
+  bio       String?
   scans     Scan[]
   learning  LearningActivity[]
   reports Report[]
