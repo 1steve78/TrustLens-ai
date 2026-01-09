@@ -38,7 +38,12 @@ export default function ScanCard({ scan, user }: ScanCardProps) {
 
   return (
     <Link href={`/home/scan/${scan.id}`} className="group">
-      <div className="glass rounded-2xl p-5 border border-white/10 hover:border-white/20 transition space-y-4">
+      <div className="rounded-2xl p-6 space-y-5
+        border border-white/10 hover:border-white/25
+        backdrop-blur-md bg-transparent
+        transition-all duration-300
+        hover:scale-[1.01]">
+
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <p className="text-sm text-gray-400 truncate max-w-[70%]">

@@ -29,10 +29,12 @@ export default function SignalsFeed({
 
   return (
     <div className="p-8">
+      {/* Header */}
       <h2 className="text-lg font-semibold mb-6">
         Community Signals
       </h2>
 
+      {/* Add Signal Button */}
       <button
         onClick={() => setOpen(true)}
         className="px-4 py-2 rounded-full text-sm
@@ -45,29 +47,42 @@ export default function SignalsFeed({
 
       {open && <AddSignalModal onClose={() => setOpen(false)} />}
 
-      <div className="space-y-4 mt-6">
-        {signals.map((signal) =>
-          signal.type === "SCAN" ? (
-            <ScanCard
-              key={`scan-${signal.id}`}
-              scan={signal.scan}
-              user={signal.user}
-            />
-          ) : (
-            <LearningPost
-              key={`learning-${signal.id}`}
-              learning={signal.learning}   // ✅ FIX
-              user={signal.user}
-            />
-          )
-        )}
+      {/* Feed */}
+      <div className="mt-8">
+        {signals.map((signal, index) => {
+          const prev = signals[index - 1];
+          const isTypeChange = prev && prev.type !== signal.type;
+
+          return (
+            <div
+              key={`${signal.type}-${signal.id}`}
+              className={isTypeChange ? "mt-10" : "mt-6"}
+            >
+              {signal.type === "SCAN" ? (
+                <ScanCard
+                  scan={signal.scan}
+                  user={signal.user}
+                />
+              ) : (
+                <LearningPost
+                  learning={signal.learning}
+                  user={signal.user}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex justify-center mt-6">
+      {/* Load More */}
+      <div className="flex justify-center mt-10">
         <button
           onClick={loadMore}
           disabled={loading}
-          className="px-6 py-2 rounded-lg bg-white/10 text-sm hover:bg-white/20 transition disabled:opacity-50"
+          className="px-6 py-2 rounded-lg
+                     bg-white/10 text-sm
+                     hover:bg-white/20 transition
+                     disabled:opacity-50"
         >
           {loading ? "Loading..." : "Load More"}
         </button>
